@@ -7,6 +7,7 @@ RealTests/ByteDance/*
 !RealTests/ByteDance/*.cpp
 RealTests/Huawei/*
 !RealTests/Huawei/*.cpp
+!RealTests/Huawei/*.py
 RealTests/WeRide/*
 !RealTests/WeRide/*.cpp
 RealTests/Xiaopeng/*
