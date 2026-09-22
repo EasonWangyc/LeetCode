@@ -1,15 +1,3 @@
 .vscode/
-codetop/*
-!codetop/*.cpp
-LeetCodeHot100/*
-!LeetCodeHot100/*.cpp
-RealTests/ByteDance/*
-!RealTests/ByteDance/*.cpp
-RealTests/Huawei/*
-!RealTests/Huawei/*.cpp
-!RealTests/Huawei/*.py
-RealTests/WeRide/*
-!RealTests/WeRide/*.cpp
-RealTests/Xiaopeng/*
-!RealTests/Xiaopeng/*.cpp
+output/
 codetop/test.cpp
