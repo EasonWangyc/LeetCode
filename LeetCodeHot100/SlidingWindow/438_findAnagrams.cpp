@@ -17,9 +17,9 @@ using namespace std;
 vector<int> findAnagrams(string s,string p){
     int n = p.length(), m = s.length();
     vector<int> ans;
-    vector<char> array1(26, 0);
+    vector<int> array1(26, 0);
     for(char c : p) array1[c- 'a']++;
-    vector<char> array2(26, 0);
+    vector<int> array2(26, 0);
     for(int r = 0; r < m; r++){
         array2[s[r] - 'a']++;
         int l = r - n + 1;
