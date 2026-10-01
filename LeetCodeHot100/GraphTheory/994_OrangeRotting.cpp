@@ -9,7 +9,7 @@
 
 返回 直到单元格中没有新鲜橘子为止所必须经过的最小分钟数。如果不可能，返回 -1 。
 
-思路：
+思路：求最小时间需要使用BFS，多个腐烂橘子->多源BFS，遍历二维数组，全部2节点入队，全部1节点计数fresh，对于非空队列且非零fresh，计数minutes，遍历队列，保存front值[r,c]后pop，然后对于[r,c]的四个方向，如果值为1且未越界就更新队列、fresh值、赋值
 */
 #include <iostream>
 #include <vector>
@@ -21,7 +21,7 @@ int OrangeRotting(vector<vector<int>>& grid){
     int minutes = 0;
     int fresh = 0;
     queue<pair<int, int>> q;
-    int directions[4][2] = {{1, 0}, {-1 , 0}, {0, 1}, {0, -1}};
+    vector<pair<int, int>> directions = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}}; 
     for(int i = 0; i < m; i++){
         for(int j = 0; j < n; j++){
             if(grid[i][j] == 2) q.push({i, j});
@@ -36,7 +36,7 @@ int OrangeRotting(vector<vector<int>>& grid){
             auto [r, c] = q.front();
             q.pop();
             for(auto& d : directions){
-                int rc = r + d[0], cc = c + d[1];
+                int rc = r + d.first, cc = c + d.second;
                 if(rc < m && rc >= 0 && cc < n && cc >=0 && grid[rc][cc] == 1){
                     grid[rc][cc] = 2;
                     fresh--;

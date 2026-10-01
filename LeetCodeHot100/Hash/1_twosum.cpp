@@ -11,7 +11,7 @@
 using namespace std;
 
 vector<int> twosum(vector<int> nums, int k){
-    unordered_map<int, int> mp;     // key为数值，value为下表
+    unordered_map<int, int> mp;     // key为数值，value为下标
     for(int i = 0; i < nums.size(); i++){
         if(mp.count(k - nums[i])) return {i, mp[k - nums[i]]};
         mp[nums[i]] = i;
