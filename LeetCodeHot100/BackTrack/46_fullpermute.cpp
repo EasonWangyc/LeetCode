@@ -16,7 +16,8 @@ void backtrack(const vector<int>& nums, vector<bool> & used, vector<vector<int>>
         ans.push_back(path);
         return;
     }
-    for(int i = 0; i < nums.size(); i++){
+    int n = nums.size();
+    for(int i = 0; i < n; i++){
         if(used[i]) continue;
         used[i] = true;
         path.push_back(nums[i]);
@@ -37,11 +38,10 @@ vector<vector<int>> fullpermute(vector<int>& nums){
 int main(){
     vector<int> nums = {1, 2, 3};
     vector<vector<int>> ans = fullpermute(nums);
-    for(int i = 0; i < ans.size(); i++){
-        for(int j = 0; j < ans[0].size(); j++){
-            cout << ans[i][j] << "";
-        }
-        cout << "\n";
+    for(auto& nums : ans){
+        for(auto& num : nums) cout << num << " ";
+        cout << "\t";
     }
+    cout << "\n";
     return 0;
 }
