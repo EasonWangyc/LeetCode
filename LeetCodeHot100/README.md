@@ -217,10 +217,10 @@ graph LR
 
 | # | 题目 | 题解 | 一句话内核 |
 |:---:|:---|:---|:---|
-| 121 | 买卖股票的最佳时机 | [codetop/121_maxProfit.cpp](../codetop/121_maxProfit.cpp) | 边扫边记历史最低价 |
-| 55 | 跳跃游戏 | | 维护「当前能到的最远下标」 |
-| 45 | 跳跃游戏 II | | 按层扩展，到达边界时步数 +1 |
-| 763 | 划分字母区间 | | 先记每个字符最后出现位置，再贪心扩右界 |
+| 121 | 买卖股票的最佳时机 | [121_maxProfit.cpp](./GreedyAlgorithm/121_maxProfit.cpp) | 边扫边记历史最低价；**先算利润再更新最低价**，顺序保证不会同一天买卖 |
+| 55 | 跳跃游戏 | [55_canJump.cpp](./GreedyAlgorithm/55_canJump.cpp) | 维护能到达的最远下标 `m`；一旦 `i > m` 就断档，返回 false |
+| 45 | 跳跃游戏 II | [45_jump.cpp](./GreedyAlgorithm/45_jump.cpp) | 不真跳：逐格扫描，`cur` 是当前步的边界、`next` 是下一步能到的最远；`i == cur` 时 `ans++` 并把 `cur` 推到 `next` |
+| 763 | 划分字母区间 | [763_partitionLabels.cpp](./GreedyAlgorithm/763_partitionLabels.cpp) | 先扫一遍记下每个字符最后出现的位置 `last[]`；再扫一遍用 `far` 扩右界，`i == far` 时就是一刀 |
 
 </details>
 
