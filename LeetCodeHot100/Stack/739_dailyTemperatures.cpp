@@ -1,4 +1,6 @@
 /*
+739. 每日温度
+
 给定一个整数数组 `temperatures`，表示每天的温度，返回一个数组 `answer`，其中 `answer[i]` 是指从第 `i` 天开始，经过多少天后温度会升高。如果之后都不会升高，则在该位置用 0 来代替。
 
 示例：
@@ -18,22 +20,21 @@ vector<int> dailyTemperatures(vector<int>& nums){
     int n = nums.size();
     vector<int> ans(n, 0);
     stack<int> st;
-    for(int i = 0;i < n; i++){
+    for(int i = 0; i < n; i++){
         while(!st.empty() && nums[i] > nums[st.top()]){
-            int pre = st.top();
+            int tmp = st.top();
             st.pop();
-            ans[pre] = i - pre;
+            ans[tmp] = i -tmp;
         }
         st.push(i);
     }
-    return ans;
 }
 
 int main(){
     vector<int> nums = {73,74,75,71,69,72,76,73};
     vector<int> ans = dailyTemperatures(nums);
-    for(int an : ans){
-        cout << an << " ";
+    for(int x : ans){
+        cout << x << " ";
     }
     cout << "\n";
     return 0;

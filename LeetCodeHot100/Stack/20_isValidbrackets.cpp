@@ -17,11 +17,11 @@ using namespace std;
 bool isValidBrackets(string s){
     unordered_map<char, char> mp = {{')', '('}, {'}', '{'}, {']', '['}};
     stack<char> st;
-    int n = s.length();
-    if(n % 2 != 0) return false;
     for(char c : s){
+        // 遇到左括号
         if(!mp.count(c)){
             st.push(c);
+        // 遇到右括号
         }else{
             if(st.empty() || st.top() != mp[c]) return false;
             st.pop();
@@ -32,6 +32,7 @@ bool isValidBrackets(string s){
 
 int main(){
     string s = "([]})";
+    cout << boolalpha;
     cout << isValidBrackets(s) << "\n";
     return 0;
 }

@@ -24,7 +24,7 @@
 using namespace std;
 
 string decodestring(string s){
-    string res = " ";
+    string res = "";
     long long multi = 0;
     stack<int> numStack;
     stack<string> strStack;
@@ -35,19 +35,15 @@ string decodestring(string s){
             strStack.push(res);
             multi = 0;
             res = "";
-        }
-        else if(c == ']'){
+        }else if(c == ']'){
             int k = numStack.top();
             numStack.pop();
             string last_res = strStack.top();
             strStack.pop();
             string temp = "";
-            for(int i = 0; i < k; i++){
-                temp += res;
-            }
+            for(int i = 0; i < k; i++) temp += res;
             res = last_res + temp;
-        }
-        else res += c;
+        }else res += c;
     }
     return res;
 }
