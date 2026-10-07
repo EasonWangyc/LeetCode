@@ -1,5 +1,7 @@
 /*
 无序数组中找到第K大的数。
+
+优化：两路切分-->三路切分，详见：LeetCodeHot100/Heap/215_findKthLargest.cpp
 */
 #include <iostream>
 #include <vector>
