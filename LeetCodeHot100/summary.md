@@ -490,6 +490,23 @@ for (int i = 0; i < n; i++) {               // 部分需要关注终止条件
 
 ## 动态规划
 
+动态规划简称DP，本质上是通过将大问题拆解成若干个相互重叠的子问题，通过记录子问题的解来避免重复计算，从而求得原问题的全局最优解。
+
+01背包、完全背包
+
+### 原题整理
+
+|题目|描述|思路|注意事项|链接|
+|---|---|---|---|---|
+|爬楼梯|一次爬一级或两级楼梯，返回爬到n级楼梯的方式|状态转移方程**dp[i]=dp[i-1]+dp[i-2]**|初始化0和1为1|[爬楼梯](./DynamicProgramming/70_climbStairs.cpp)|
+|杨辉三角|返回杨辉三角数组的数组|初始化ans数组的数组，两层循环，第一层循环层数i，内部循环索引1\~i，状态转移方程**dp[i][j]=dp[i-1][j]+dp[i-1][j-1]**|注意索引；每一层需要`resize()`|[杨辉三角](./DynamicProgramming/118_generate.cpp)|
+|打家劫舍|相邻不能偷，返回最大收益|状态转移方程**dp[i]=max(dp[i-1], dp[i-2]+nums[i-1])**|注意索引，dp数组和nums数组差1；dp初始化大小为n+1，让dp[0]表示“第0间房”的收益为0|[打家劫舍](./DynamicProgramming/198_rob.cpp)|
+|完全平方数|返回一个整数能最少由完全平方数相加表示的个数|对于所有i，枚举所有满足$j \in [1, \lfloor\sqrt{i}\rfloor]$，状态转移方程为**dp[i]=min(dp[i],dp[i-j*j]+1)**|附初始值为`dp[i]=i`表示全1相加|[完全平方数](./DynamicProgramming/279_numSquares.cpp)|
+|硬币找零|硬币数组和一个整数，返回由最小数量硬币组成整数的个数|对于所有i，遍历所有coin，每次判断coin值是否小于等于当前当前值，状态转移方程为**dp[i]=min(dp[i],dp[i-coin]+1)**|初始化`dp(amount+1,amount+1)`，前者是为了取到amount值，后者是为了最后方便判断是否由可行的方案|[硬币找零](./DynamicProgramming/322_coinChange.cpp)|
+|单词拆分|返回s能否被wordDict中的字符串拼出|**哈希set**存储字符串；要判断前i个字符组成的子串能否被拆分，可以将该子串按j切分，遍历j，前半部分能被拆分且剩余部分可以在哈希set中检索到，状态转移判断为**if(dp[j] && wordSet.count(s.substr(j,i-j)))**|初始化dp(n+1,false)，`dp[0]=true`；i取值`[0,n]`，j取值`[0,i-1]`|[单词拆分](./DynamicProgramming/139_wordBreak.cpp)|
+|最长递增子序列|返回严格递增自序列的长度|遍历数组的元素nums[i]，遍历前j个元素来更新dp[i]，状态转移判断为**if(nums[i]>nums[j]) dp[i]=max(dp[i],dp[j]+1)**，即如果能在前序中找到小于当前元素的元素说明当前dp[i]可以增加|子序列不要求连续；维护两个变量，dp[i]表示前i个子数组的最大长度，遍历i更新ans|[最长递增子序列](./DynamicProgramming/300_lengthOfLIS.cpp)|
+|乘积最大子数组|整数数组，返回非空连续子数组的乘积|**同时维护当前最大值和最小值**，因为数组元素可能有0和负数，更新逻辑为**curMax=max({temp\*x,curMin\*x,x}),curMin=min({temp\*x,curMin\*x,x})**|更新逻辑很重要|[乘积最大子数组](./DynamicProgramming/152_maxProduct.cpp)|
+
 ## 多维动态规划
 
 ## 技巧

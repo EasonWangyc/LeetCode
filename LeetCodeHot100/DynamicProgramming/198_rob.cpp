@@ -11,6 +11,7 @@
 思路：使用动态规划。定义 dp[i] 表示偷窃到第 i 个房屋时能够获得的最高金额，则状态转移方程为 dp[i] = max(dp[i-1], dp[i-2] + nums[i])，即偷第 i 个房屋时可以选择不偷（dp[i-1]）或者偷（dp[i-2] + nums[i]）。
 */
 #include <iostream>
+#include <algorithm>
 #include <vector>
 using namespace std;
 
@@ -20,9 +21,7 @@ int rob(vector<int>& nums){
     vector<int> dp(n + 1, 0);
     dp[0] = 0;
     dp[1] = nums[0];
-    for(int i = 2; i <= n; i++){
-        dp[i] = max(dp[i - 1], nums[i - 1] + dp[i - 2]);//注意这里是i-1
-    }
+    for(int i = 2; i <= n; i++) dp[i] = max(nums[i - 1] + dp[i - 2], dp[i - 1]);
     return dp[n];
 }
 
