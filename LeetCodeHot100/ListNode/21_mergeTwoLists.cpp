@@ -1,3 +1,8 @@
+/*
+21. 合并两个有序链表
+
+将两个升序链表合并为一个新的 升序 链表并返回。新链表是通过拼接给定的两个链表的所有节点组成的。 
+*/
 #include <vector>
 #include <iostream>
 using namespace std;
@@ -12,19 +17,18 @@ ListNode* mergeTwoLists(ListNode* l1, ListNode* l2) {
     if(!l1) return l2;
     if(!l2) return l1;
     ListNode dummy(0);
-    ListNode* ans = &dummy;
+    ListNode* head = &dummy;
     while(l1 && l2){
         if(l1->val > l2->val){
-            ans->next = l2;
+            head->next = l2;
             l2 = l2->next;
-        }
-        else{
-            ans->next = l1;
+        }else{
+            head->next = l1;
             l1 = l1->next;
         }
-        ans = ans->next;
+        head = head->next;
     }
-    ans->next = l1 ? l1 : l2;//如果l1和l2长度不一样，剩下的部分直接接在后面
+    head->next = l1 ? l1 : l2;
     return dummy.next;
 }
 

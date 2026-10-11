@@ -196,8 +196,8 @@ graph LR
 | 20 | 有效的括号 | [20_isValidbrackets.cpp](./Stack/20_isValidbrackets.cpp) | 左括号入栈，右括号匹配栈顶 |
 | 394 | 字符串解码 | [394_decodestring.cpp](./Stack/394_decodestring.cpp) | 双栈存「重复次数 + 之前的串」 |
 | 739 | 每日温度 | [739_dailyTemperatures.cpp](./Stack/739_dailyTemperatures.cpp) | 单调栈存下标，遇到更大值弹栈结算 |
-| 155 | 最小栈 | | 辅助栈同步存当前最小值 |
-| 84 | 柱状图中最大的矩形 | | 单调栈找左右第一个更矮的柱子 |
+| 155 | 最小栈 | [155_MinStack.cpp](./Stack/155_MinStack.cpp) | 栈里存 `pair<值, 当前最小值>`，`second` 同步维护 |
+| 84 | 柱状图中最大的矩形 | [84_largestRectangleArea.cpp](./Stack/84_largestRectangleArea.cpp) | 单调栈找左右第一个更矮的柱子；栈先压 `-1`、数组末尾补 `-1` 当哨兵 |
 
 </details>
 
@@ -206,9 +206,9 @@ graph LR
 
 | # | 题目 | 题解 | 一句话内核 |
 |:---:|:---|:---|:---|
-| 215 | 数组中的第 K 个最大元素 | [codetop/215_findKthLargest.cpp](../codetop/215_findKthLargest.cpp) | 小顶堆保 k 个，或快速选择 |
-| 347 | 前 K 个高频元素 | | 哈希计数 + 小顶堆按频次筛 |
-| 295 | 数据流的中位数 | | 对顶堆：大顶存小半，小顶存大半 |
+| 215 | 数组中的第 K 个最大元素 | [215_findKthLargest.cpp](./Heap/215_findKthLargest.cpp) | 三路切分快速选择，平均 O(n)；`swap` 到 `gt` 时只能 `gt--` 不能 `i++` |
+| 347 | 前 K 个高频元素 | [347_topKFrequent.cpp](./Heap/347_topKFrequent.cpp) | 哈希计数 + 桶排序，桶下标就是出现次数，从后往前取 |
+| 295 | 数据流的中位数 | [295_addNum.cpp](./Heap/295_addNum.cpp) | 对顶堆：大顶存小半、小顶存大半，保持 `left.size() >= right.size()` |
 
 </details>
 
@@ -229,16 +229,16 @@ graph LR
 
 | # | 题目 | 题解 | 一句话内核 |
 |:---:|:---|:---|:---|
-| 70 | 爬楼梯 | | `f[i] = f[i-1] + f[i-2]` |
-| 118 | 杨辉三角 | | 逐行递推 |
+| 70 | 爬楼梯 | [70_climbStairs.cpp](./DynamicProgramming/70_climbStairs.cpp) | `dp[i] = dp[i-1] + dp[i-2]` |
+| 118 | 杨辉三角 | [118_generate.cpp](./DynamicProgramming/118_generate.cpp) | 逐行递推，两侧恒为 1 |
 | 198 | 打家劫舍 | [198_rob.cpp](./DynamicProgramming/198_rob.cpp) | `f[i] = max(f[i-1], f[i-2] + nums[i])` |
-| 279 | 完全平方数 | | 完全背包，`f[i] = min(f[i - j²] + 1)` |
-| 322 | 零钱兑换 | | 完全背包求最少硬币数 |
-| 139 | 单词拆分 | | `f[i]` = 前 i 个字符能否由字典拼出 |
+| 279 | 完全平方数 | [279_numSquares.cpp](./DynamicProgramming/279_numSquares.cpp) | 完全背包：`dp[i] = min(dp[i], dp[i - j*j] + 1)`，初值 `dp[i] = i`（全用 1 凑） |
+| 322 | 零钱兑换 | [322_coinChange.cpp](./DynamicProgramming/322_coinChange.cpp) | 完全背包求最少硬币；初值 `amount+1` 充当「不可达」 |
+| 139 | 单词拆分 | [139_wordBreak.cpp](./DynamicProgramming/139_wordBreak.cpp) | `dp[i]` = 前 i 个字符能否由字典拼出，`dp[0] = true`；内层切分点 j |
 | 300 | 最长递增子序列 | [300_lengthOfLIS.cpp](./DynamicProgramming/300_lengthOfLIS.cpp) | `f[i]` 以 i 结尾的 LIS；贪心 + 二分可到 O(n log n) |
-| 152 | 乘积最大子数组 | | 同时维护最大和最小（负数会翻转） |
-| 416 | 分割等和子集 | | 0-1 背包，目标和为 `sum/2` |
-| 32 | 最长有效括号 | | 栈存下标，或用 `f[i]` 记录以 i 结尾的长度 |
+| 152 | 乘积最大子数组 | [152_maxProduct.cpp](./DynamicProgramming/152_maxProduct.cpp) | 同时维护 `curMax` 和 `curMin`——负数会让两者互换 |
+| 416 | 分割等和子集 | [416_canPartition.cpp](./DynamicProgramming/416_canPartition.cpp) | 0-1 背包，目标和 `sum/2`；**j 必须从后往前**，否则元素被重复使用 |
+| 32 | 最长有效括号 | [32_longestValidParentheses.cpp](./DynamicProgramming/32_longestValidParentheses.cpp) | 栈存下标，先压 `-1` 当锚点；长度 = `i - st.top()` |
 
 </details>
 
@@ -247,10 +247,10 @@ graph LR
 
 | # | 题目 | 题解 | 一句话内核 |
 |:---:|:---|:---|:---|
-| 62 | 不同路径 | | `f[i][j] = f[i-1][j] + f[i][j-1]` |
-| 64 | 最小路径和 | | 同上取 min，注意首行首列初始化 |
-| 5 | 最长回文子串 | [codetop/5_longestPalindrome.cpp](../codetop/5_longestPalindrome.cpp) | 区间 DP，按长度从小到大填 |
-| 1143 | 最长公共子序列 | [codetop/1143_longestCommonSubsequence.cpp](../codetop/1143_longestCommonSubsequence.cpp) | 相等则左上 +1，否则取上/左较大者 |
+| 62 | 不同路径 | [62_uniquePaths.cpp](./MultiDimDynamicProgamming/62_uniquePaths.cpp) | `dp[i][j] = dp[i-1][j] + dp[i][j-1]`，首行首列初始化为 1 |
+| 64 | 最小路径和 | [64_minPathSum.cpp](./MultiDimDynamicProgamming/64_minPathSum.cpp) | 同上取 min；边界直接累加，其余位置是**累加**不是赋值 |
+| 5 | 最长回文子串 | [5_longestPalindrome.cpp](./MultiDimDynamicProgamming/5_longestPalindrome.cpp) | 中心扩展：枚举 2n-1 个中心，一个循环同时处理奇偶长度 |
+| 1143 | 最长公共子序列 | [1143_longestCommonSubsequence.cpp](./MultiDimDynamicProgamming/1143_longestCommonSubsequence.cpp) | 字符相等取左上 +1，否则取上/左较大者 |
 | 72 | 编辑距离 | [72_minDistance.cpp](./MultiDimDynamicProgamming/72_minDistance.cpp) | 增 / 删 / 换三者取 min 再加 1 |
 
 </details>
@@ -260,10 +260,11 @@ graph LR
 
 | # | 题目 | 题解 | 一句话内核 |
 |:---:|:---|:---|:---|
-| 136 | 只出现一次的数字 | | 全部异或，成对的抵消为 0 |
-| 169 | 多数元素 | | 摩尔投票：不同则抵消 |
-| 75 | 颜色分类 | | 三指针一次遍历（荷兰国旗） |
-| 31 | 下一个排列 | | 从右找升序对，交换后反转后缀 |
+| 136 | 只出现一次的数字 | [136_singleNumber.cpp](./Technique/136_singleNumber.cpp) | 全部异或，成对的抵消为 0 |
+| 169 | 多数元素 | [169_majorityElement.cpp](./Technique/169_majorityElement.cpp) | 摩尔投票：相同则 hp+1，不同则 -1，归零换人 |
+| 75 | 颜色分类 | [75_sortColors.cpp](./Technique/75_sortColors.cpp) | 三指针一次遍历（荷兰国旗），blue 的位置恒等于 i |
+| 31 | 下一个排列 | [31_nextPermutation.cpp](./Technique/31_nextPermutation.cpp) | 从右找第一个降序断点，与右侧第一个更大者交换，再反转后缀 |
+| 287 | 寻找重复数 | [287_findDuplicate.cpp](./Technique/287_findDuplicate.cpp) | 把值当下标指针，`i → nums[i]` 必成环，转成找环形链表入口 |
 | 287 | 寻找重复数 | | 值域当链表下标，转化为找环入口 |
 
 </details>

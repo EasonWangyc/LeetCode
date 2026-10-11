@@ -1,5 +1,5 @@
 /*
-批量求 $[1, N]$ 内所有质数。
+批量求[1, N]内所有质数。
 */
 #include <iostream>
 #include <vector>

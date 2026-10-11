@@ -1,3 +1,11 @@
+/*
+25. K 个一组翻转链表
+
+给你链表的头节点 head ，每 k 个节点一组进行翻转，请你返回修改后的链表。
+
+k 是一个正整数，它的值小于或等于链表的长度。如果节点总数不是 k 的整数倍，那么请将最后剩余的节点保持原有顺序。
+你不能只是单纯的改变节点内部的值，而是需要实际进行节点交换。
+*/
 #include <vector>
 #include <iostream>
 using namespace std;
@@ -24,30 +32,24 @@ ListNode* reverseKGroup(ListNode* head, int k){
     ListNode dummy(0);
     dummy.next = head;
     ListNode* p0 = &dummy;
-    ListNode* pre = nullptr;
     ListNode* cur = head;
+    ListNode* pre = nullptr;
     for(; n >= k; n -= k){
         for(int i = 0; i < k; i++){
             ListNode* nxt = cur->next;
             cur->next = pre;
             pre = cur;
             cur = nxt;
+            // 结束时cur在下一段的开始
         }
-        ListNode* nxt = p0->next;//保存当前段的头结点
-        p0->next->next = cur;//当前段的头结点指向下一段的头结点
-        p0->next = pre;//当前段的头结点指向反转后的头结点
-        p0 = nxt;//移动p0到下一段的前一个节点
+        // 以12345，n为2为例->21435
+        // p0在哨兵，nxt在1，cur为3，pre为2
+        ListNode* nxt = p0->next;
+        p0->next->next = cur;   // 1->3
+        p0->next = pre;         // dummy->2
+        p0 = nxt;               // pre变为当前段的尾节点1
     }
     return dummy.next;
-    //以[1,2,3,4]且k=3为例：
-    //初始化：p0指向dummy，pre=nullptr，cur=1  dummy->1->2->3->4->nullptr
-    //第一次循环：1指向nullptr，pre=1，cur=2    1->nullptr,2->3->4->nullptr
-    //第二次循环：2指向1，pre=2，cur=3          2->1->nullptr,3->4->nullptr
-    //第三次循环：3指向2，pre=3，cur=4          3->2->1->nullptr,4->nullptr
-    //nxt = p0->next指向1                    dummy->1，保留1
-    //将1指向4                                1->4->nullptr  
-    //将p0->next指向3                         dummy->3->2->1->4->nullptr
-    //将p0移动到1                             p0更新为1，准备下一段的反转
 }
 
 int main(){

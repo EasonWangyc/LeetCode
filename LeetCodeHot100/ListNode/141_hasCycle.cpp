@@ -1,4 +1,6 @@
 /*
+141. 环形链表
+
 给你一个链表的头节点 head ，判断链表中是否有环。如果链表中存在环，则返回 true 。 否则，返回 false 。
 
 示例：
@@ -19,7 +21,7 @@ struct ListNode {
 
 bool hasCycle(ListNode *head) {
     if(!head) return false;
-    ListNode* slow = head, *fast = head;
+    ListNode *slow = head, *fast = head;
     while(fast && fast->next){
         slow = slow->next;
         fast = fast->next->next;
@@ -28,19 +30,15 @@ bool hasCycle(ListNode *head) {
     return false;
 }
 
-ListNode* bulidList(const vector<int>& nums){
-    ListNode dummy(0);
-    ListNode* tail = &dummy;
-    for(int num : nums){
-        tail->next = new ListNode(num);
-        tail = tail->next;
-    }
-    return dummy.next;
-}
-
 int main(){
-    ListNode* head = bulidList({3, 2, 0, -4});
-    head->next->next->next->next = head->next; // Create a cycle
-    cout << (hasCycle(head) ? "true" : "false") << "\n";
+    ListNode* n1 = new ListNode(3);
+    ListNode* n2 = new ListNode(2);
+    ListNode* n3 = new ListNode(0);
+    ListNode* n4 = new ListNode(-4);
+    n1->next = n2;
+    n2->next = n3;
+    n3->next = n4;
+    n4->next = n2;
+    cout << boolalpha << hasCycle(n1) << "\n";
     return 0;
 }

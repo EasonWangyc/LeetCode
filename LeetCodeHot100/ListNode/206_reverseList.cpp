@@ -1,3 +1,8 @@
+/*
+206. 反转链表
+
+给你单链表的头节点 head ，请你反转链表，并返回反转后的链表。
+*/
 #include <iostream>
 using namespace std;
 
@@ -8,10 +13,9 @@ struct ListNode{
 };
 
 ListNode* reverseList(ListNode* head){
-    ListNode* pre = nullptr;
-    ListNode* cur = head;
+    ListNode *pre = nullptr, *cur = head;
     while(cur){
-        ListNode* nxt = cur->next;
+        ListNode *nxt = cur->next;
         cur->next = pre;
         pre = cur;
         cur = nxt;
@@ -37,7 +41,6 @@ int main(){
     n2->next = n3;
     n3->next = n4;
     n4->next = n5;
-
     ListNode* ans = reverseList(n1);
     printList(ans);
     return 0;

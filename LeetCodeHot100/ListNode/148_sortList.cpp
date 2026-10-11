@@ -1,3 +1,8 @@
+/*
+148. 排序链表
+
+给你链表的头结点 head ，请将其按 升序 排列并返回 排序后的链表 。
+*/
 #include <vector>
 #include <iostream>
 using namespace std;
@@ -17,6 +22,7 @@ ListNode* buildList(const vector<int>& nums){
     }
     return dummy.next;
 }
+// 切分链表为两个部分
 ListNode* middleNode(ListNode* head) {
     ListNode* pre = head;
     ListNode* slow = head;
@@ -30,6 +36,7 @@ ListNode* middleNode(ListNode* head) {
     return slow;
 }
 
+// 升序合并
 ListNode* mergeTwoLists(ListNode* l1, ListNode* l2){
     ListNode dummy(0);
     ListNode* cur = &dummy;
@@ -47,6 +54,7 @@ ListNode* mergeTwoLists(ListNode* l1, ListNode* l2){
     return dummy.next;
 }
 
+// 递归解决
 ListNode* sortList(ListNode* head){
     if(head == nullptr || head->next == nullptr) return head;
     ListNode* head2 = middleNode(head);

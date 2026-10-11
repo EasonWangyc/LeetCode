@@ -1,5 +1,11 @@
+/*
+234. 回文链表
+
+给你一个单链表的头节点 head ，请你判断该链表是否为回文链表。如果是，返回 true ；否则，返回 false 。
+*/
 #include <iostream>
 using namespace std;
+
 struct ListNode {
     int val;
     ListNode *next;
@@ -17,9 +23,10 @@ ListNode* reverseList(ListNode* head) {
     return pre;
 }
 
-ListNode* middleNode(ListNode* head) {
-    ListNode* slow = head, *fast = head;
-    while (fast && fast->next) {
+// 找到链表中间节点
+ListNode* middleNode(ListNode* head){
+    ListNode *slow = head, *fast = head;
+    while(fast && fast->next){
         slow = slow->next;
         fast = fast->next->next;
     }
@@ -27,10 +34,12 @@ ListNode* middleNode(ListNode* head) {
 }
 
 bool isPalindrome(ListNode* head){
-    ListNode* mid = middleNode(head);
-    ListNode* rev = reverseList(mid);//反转前半段
+    // 奇数情况1 2 3 2 1，slow为3，后半段反转为1 2 3
+    // 偶数情况1 2 2 1，slow为第二个2，后半段反转为1 2
+    ListNode *mid = middleNode(head);
+    ListNode *rev = reverseList(mid);
     while(rev){
-        if(rev->val != head->val) return false;
+        if(rev->val  != head->val) return false;
         rev = rev->next;
         head = head->next;
     }
@@ -43,6 +52,6 @@ int main(){
     head->next->next = new ListNode(2);
     head->next->next->next = new ListNode(1);
 
-    cout << (isPalindrome(head) ? "true" : "false")  << "\n";
+    cout << boolalpha << isPalindrome(head) << "\n";
     return 0;
 }

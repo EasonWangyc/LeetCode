@@ -1,4 +1,6 @@
 /*
+142. 环形链表Ⅱ
+
 给定一个链表，返回链表开始入环的第一个节点。 如果链表无环，则返回 null。
 
 示例：
@@ -7,6 +9,8 @@
 解释：链表中有一个环，其尾部连接到第二个节点。
 
 思路：快慢指针，当快慢指针相遇时，快指针回到链表头部，慢指针保持在相遇位置，然后两个指针每次移动一步，当它们再次相遇时，相遇点就是链表入环的第一个节点。
+
+公式推导：设head到环距离为a，相遇时slow走了b，则fast走了2b，设环长为c，则有2b-b=kc即b=kc，此时fast到head处，此时slow在环中已经走了b-a=kc-a步，则两种都再走a步刚好能同时到达环处。
 */
 #include <iostream>
 #include <vector>
@@ -19,7 +23,7 @@ struct ListNode {
 
 ListNode* detectCycle(ListNode *head) {
     if(!head) return nullptr;
-    ListNode* slow = head, *fast = head;
+    ListNode *slow = head, *fast = head;
     while(fast && fast->next){
         slow = slow->next;
         fast = fast->next->next;

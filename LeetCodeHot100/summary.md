@@ -138,8 +138,95 @@ for(int r = 0; r < n; r++){
 |旋转图像|原地将方阵顺时针旋转90°|**90°旋转=对角线交换+每行反转**|`reverse()`需要包含`<algorithm>`|[旋转图像](./Matrix/48_rotate.cpp)|
 |搜索二维矩阵Ⅱ|矩阵每行每列都单调递增，设计搜索目标值的高效算法|**从右上角或左下角开始查找**：左上角和右下角的性质是（以左上角为例），要找比当前值大的数，往右或往下都有可能，无法高效|边界条件|[搜索二维矩阵Ⅱ](./Matrix/240_searchMatrix.cpp)|
 
-
 ## 链表
+
+链表是一种线性结构，**逻辑连续但是物理离散**，需要$O(n)$时间随机访问，由于节点通过指针串联，所以插入和删除极快。
+
+### 结构定义
+
+```cpp
+struct ListNode{
+    int val;
+    ListNode* next;
+    ListNode() : val(0), next(nullptr) {}
+    ListNode(int x) : val(x), next(nullptr) {}
+    ListNode(int x, ListNode *next) : val(x), next(next) {}
+};
+```
+
+### 常见套路
+
+#### 1.哨兵节点
+
+处理头节点通常比较特别，此时可以在原头节点前垫一个虚拟哨兵，如下：
+
+```cpp
+ListNode dummy(0);
+ListNode *head = &dummy;
+...
+return dummy.next;
+```
+
+和通常定义方式的区别如下：
+
+|维度|ListNode dummy(0); (实体)|ListNode* dummy = new ListNode(0); (堆指针)|
+|---|---|---|---|
+|内存位置|栈区（Stack）|堆区（Heap）|
+|成员访问方式|实体变量，使用点运算符 . (dummy.next)|指针变量，使用箭头运算符 -> (dummy->next)|
+|内存释放|自动释放（函数执行完毕出栈时自动销毁）|需要手动 delete，否则会产生内存泄漏|
+|分配耗时|极快（只需移动栈顶指针，几个 CPU 周期）|相对较慢（涉及操作系统的内存分配器查找与管理）|
+|返回类型匹配|dummy.next 的类型本身就是 ListNode*，正好直接 return|dummy->next 的类型也是 ListNode*，正好直接 return|
+
+在[LRU缓存](./ListNode/146_LRU.cpp)中，使用了`Node dummy`去定义dummy，因为需要考虑实际运行时的**生命周期**问题，链表的所有节点需要稳定存活在堆区以供调用，直至整个LRUCache实例被销毁。
+
+#### 2.快慢指针
+
+常见于寻找链表中点、判断链表是否有环、固定间距滑动窗口中。
+
+#### 3.链表反转
+
+三指针 pre、cur、nxt 步调一致推进：
+
+```cpp
+ListNode* nxt = cur->next;
+cur->next = pre;
+pre = cur;
+cur = nxt;
+```
+
+#### 4.由数组快速构造链表
+
+常见于acm模式写法：
+
+```cpp
+ListNode* buildList(const vector<int>& nums){
+    ListNode dummy(0);
+    ListNode* head = &dummy;
+    for(int num : nums){
+        head->next = new ListNode(num);
+        head = head->next;
+    }
+    return dummy.next;
+}
+```
+
+### 原题整理
+
+|题目|描述|思路|注意事项|链接|
+|---|---|---|---|---|
+|相交链表|返回相交的起始节点|while分别遍历，当走到第一个链表尽头时直接赋值为第二个链表的头节点，如果相交两者在相交点停下，否则两者均为`nullptr`|设A的第一段长度为x，B的第一段长度为y，公共长度为z，正好有`x+z+y=y+z+x`；三元运算符快速赋值p和q|[相交链表](./ListNode/160_getIntersectionNode.cpp)|
+|反转链表|返回反转后的链表|**额外初始化一个pre节点**，遍历head，每次先保存cur->next为nxt，然后把cur->next赋成pre，然后更新pre和cur分别为cur和nxt|注意更新的顺序|[反转链表](./ListNode/206_reverseList.cpp)|
+|回文链表|判断某个链表是否回文|先用**快慢指针**找到链表中间节点，再**反转后半部分链表**，最后从head和rev出发每次都判断是否相同|奇数情况和偶数情况都能用同一个快慢指针方法找到中间节点；while需要同时判断fast和fast->next|[回文链表](./ListNode/234_isPalindrome.cpp)|
+|环形链表|判断链表是否有环|**快慢指针**，若存在环必定会相遇|while需要同时判断fast和fast->next|[环形链表](./ListNode/141_hasCycle.cpp)|
+|环形链表Ⅱ|找到环形链表的入环节点，找不到返回nullptr|**快慢指针**，同上相遇时将fast置成head，然后再次相遇点即为入环点|设head到环距离为a，相遇时slow走了b，则fast走了2b，设环长为c，则有2b-b=kc即b=kc，此时fast到head处，此时slow在环中已经走了b-a=kc-a步，则两种都再走a步刚好能同时到达环处|[环形链表Ⅱ](./ListNode/142_detectCycle.cpp)|
+|合并两个有序链表|**初始化哨兵节点**和head，每次判断l1和l2对应值大小，更新对应ln和head，最后合并剩余链表|哨兵节点的使用|[合并两个有序链表](./ListNode/21_mergeTwoLists.cpp)|
+|删除链表的倒数第N个节点|删除链表的倒数第n个结点，并且返回链表的头结点|初始化哨兵节点；**双指针**，右指针先走n步，然后左右指针走相同的步数，停止条件为right到了最后一个节点，此时left停在需要删除的上一个节点，left->next=left->next->next，然后删除该节点|`while(right->next)`，因为要处理left前一个节点，所以right要停在最后一个节点|[删除链表的倒数第N个节点](./ListNode/19_removeNthFromEnd.cpp)|
+|两两交换链表中的节点|不修改节点值的情况下两两交换链表中的节点|初始化哨兵节点指向head；用4个变量`pre`、`cur`、`nxt`、`nxtnxt`分别表示上一个节点、当前节点、下一个节点、下下个节点，更新逻辑是让**pre指向nxt、nxt指向cur、cur指向nxtnxt**，最后更新**pre为cur和cur为nxtnxt**|`ListNode *pre= &dummy`|[两两交换链表中的节点](./ListNode/24_swapPairs.cpp)|
+|K个一组翻转链表|每K个节点一组进行翻转，剩余节点保持原有顺序|先得到链表的长度n；初始化**哨兵节点**，共需要三个关键变量，p0用于组间指针指向、pre和cur用于组内的翻转；外层循环`for(; n >= k; n -= k)`，内层循环`for(int i = 0; i < k; i++)`，内层每次两两翻转，翻转完后cur停在下一组的开头，pre为这一组已翻转后的头节点，初始化一个`nxt`为p0->next，即原头节点，所以原头节点->next为下一组的开头，即`p0->next->next=cur`，上一次的p0应该指向翻转后的头节点，即`p0->next=pre`，最后更新p0为翻转后的尾节点，即这一段的原头节点，即`p0=nxt`|双层循环处理；几个关键节点的赋值|[K个一组翻转链表](./ListNode/25_reverseKGroup.cpp)|
+|随机链表的复制|**通过复制形成交错链表然后再分离**|由于新元素和旧元素一一对应，所以有`cur->next->random = cur->random->next`；注意分离时的更新逻辑；复制链表和复制random时for的最后一个判断需要`cur=cur->next->next`|[随机链表的复制](./ListNode/138_copyRandomList.cpp)|
+|排序链表|返回升序排列的链表|**分治递归**，需要先**切断链表**然后再合并；先实现升序合并函数`mergeTwoLists()`，再实现从中间切断一个链表再返回后半部分头节点；最后实现`sort`函数，定义边界条件，若头节点为空或者头节点next为空直接返回，然后切分原链表后分别对两个部分进行`sort`最后返回两者的合并|与之前返回中间节点不同，这里需要手动将slow的前一个节点pre的next置为nullptr|[排序链表](./ListNode/148_sortList.cpp)|
+|合并K个升序链表|合并一个链表数组为一个升序链表|先定义合并**两个有序链表**的函数，然后采用**分治递归**的思想合并K个链表，通过i和j指定合并区间，定义**边界条件**，left为[i,i+m/2]的合并结果，right为[i+m/2,j]的合并结果，最终返回mergeTwoLists(left,right)|由于定义了上面两个边界条件的返回值，最终可以递归到两个链表的合并，总时间复杂度为$O(logK)$|[合并K个升序链表](./ListNode/23_mergeKLists.cpp)|
+|LRU缓存|实现LRUCache类|**哈希表+双向链表**实现$O(1)$时间将key映射到链表的内存地址和维护“最近最少使用”；**单哨兵**，因此`dummy->next`是最近刚刚使用过的节点，`dummy->prev`是最久没被触碰过的节点，不存在`nullptr`；`remove()`实现架空x节点；`push_front()`实现置顶插入；哈希表的结构为`<int,Node*>`，即key为查找值，value为对应链表节点，再根据链表节点查找值，`get_node()`实现检查key，不存在返回空指针，存在返回对应node且将其移至最前；`get()`调用一次`get_node()`，根据node是否为空指针返回-1和值；`put()`调用一次`get_node()`，key存在则更新value，否则将新node放在最前，此时判断哈希表容量是否大于capacity，若为真删除dummy->prev和哈希表key对应元素|LRUCache(int capacity)初始化赋值函数，且需要赋值dummy的两侧；使用`auto it=key_to_node.find(key)`不会因为不存在而向哈希表中加入新值；使用`erase()`删除哈希表对应元素|[LRU缓存](./ListNode/146_LRU.cpp)|
 
 ## 二叉树
 
@@ -517,9 +604,9 @@ for (int i = 0; i < n; i++) {               // 部分需要关注终止条件
 |---|---|---|---|---|
 |不同路径|二维矩阵返回从左上角走到右下角的路径条数|初始化二维dp数组，状态转移方程为**dp[i][j]=dp[i-1][j]+dp[i][j-1]**|初始化全1|[不同路径](./MultiDimDynamicProgamming/62_uniquePaths.cpp)|
 |最小路径和|返回所有路径上元素之和的最小值|同上，初始化二维dp数组（也可以直接操作原数组），对i=0和j=0的边界进行讨论，边界上直接相加，其余情况状态转移方程为**dp[i][j] += min(dp[i-1][j], dp[i][j-1])**|注意是累加不是直接赋值|[最小路径和](./MultiDimDynamicProgamming/64_minPathSum.cpp)|
-|最长回文子串|找到字符串s中的最长回文子串|先用空隙和字符的关系处理**奇偶**情况；遍历$i \in [0,2n-1]$，用`l=i/2`和`r=i+1/2`表示起始位置；每次从中间出发，**双向移动指针判断是否越界且字符是否相同**，更新left和right|while结束后l在回文(串左边一位，r在回文串右边一位，因此长度`r-1-(l+1)+1=r-l-1`；更新逻辑是`left=l+1,right=r`；`substr()`的传参是起始位置和长度|[最长回文子串](./MultiDimDynamicProgamming/5_longestPalindrome.cpp))|
+|最长回文子串|找到字符串s中的最长回文子串|先用空隙和字符的关系处理**奇偶**情况；遍历$i \in [0,2n-1]$，用`l=i/2`和`r=i+1/2`表示起始位置；每次从中间出发，**双向移动指针判断是否越界且字符是否相同**，更新left和right|while结束后l在回文(串左边一位，r在回文串右边一位，因此长度`r-1-(l+1)+1=r-l-1`；更新逻辑是`left=l+1,right=r`；`substr()`的传参是起始位置和长度|[最长回文子串](./MultiDimDynamicProgamming/5_longestPalindrome.cpp)|
 |最长公共子序列|返回两个字符串的最长公共子序列大小|初始化二维dp数组，**dp[i][j]**表示`text1[0,...,i-1]`与`text2[0,...,j-1]`的最大公共子序列长度，遍历ij，每次判断i和j对应的字符是否相同，相同+1，否则取两个方向的最大值|i和j需要分别取到m和n|[最长公共子序列](./MultiDimDynamicProgamming/1143_longestCommonSubsequence.cpp)|
-|编辑距离|从一个字符串变为另一个字符串所需要的最小步骤，操作为替换、插入、删除|初始化二维dp数组，表示**用一个二维数组dp[i][j]表示word1[0,...,i-1]变化为word2[0,...,j-1]的最少操作数**，尾部字符相同时继承原来的值，不同时替换、插入、删除三个操作可以写成状态转移方程**dp[i][j]=min({dp[i][j],dp[i][j-1],dp[i-1][j]})+1**|注意索引，处理`dp[i][j]`时判断的是`word1[i-1]`和`word2[j-1]`|[编辑距离](./MultiDimDynamicProgamming/72_minDistance.cpp)|
+|编辑距离|从一个字符串变为另一个字符串所需要的最小步骤，操作为替换、插入、删除|初始化二维dp数组，表示**用一个二维数组dp[i][j]表示word1[0,...,i-1]变化为word2[0,...,j-1]的最少操作数**，尾部字符相同时继承原来的值，不同时替换、插入、删除三个操作对应三个来源，状态转移方程为**dp[i][j]=min({dp[i-1][j-1], dp[i-1][j], dp[i][j-1]})+1**（依次对应替换、删除`word1[i-1]`、插入`word2[j-1]`）|注意索引，处理`dp[i][j]`时判断的是`word1[i-1]`和`word2[j-1]`|[编辑距离](./MultiDimDynamicProgamming/72_minDistance.cpp)|
 
 
 ## 技巧
