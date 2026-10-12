@@ -1,9 +1,15 @@
+/*
+101. 对称二叉树
+
+给你一个二叉树的根节点 root ， 检查它是否轴对称。
+*/
 #include <iostream>
 #include <queue>
 #include <vector>
+#include <algorithm>
 using namespace std;
 
-struct TreeNode{
+struct TreeNode {
     int val;
     TreeNode* left;
     TreeNode* right;
@@ -41,16 +47,18 @@ TreeNode* buildTreeNode(const vector<string>& nodes) {
 	return root;
 }
 
-int maxDepth(TreeNode* root){
-    if(!root) return 0;
-    int l = maxDepth(root->left);
-    int r = maxDepth(root->right);
-    return max(l, r) + 1;
+bool isSameTree(TreeNode* p, TreeNode* q) {
+	if(p == nullptr || q == nullptr) return p == q;
+	return p->val == q->val && isSameTree(p->left, q->right) && isSameTree(p->right, q->left);
 }
 
-int main(){
-    vector<string> nodes = {"3", "9", "20", "null", "null", "15", "7"};
+bool isSymmetric(TreeNode* root) {
+    return isSameTree(root->left, root->right);    
+}
+
+int main() {
+    vector<string> nodes = {"1", "2", "2", "3", "4", "4", "3"};
     TreeNode* root = buildTreeNode(nodes);
-    cout << maxDepth(root) << "\n";
+    cout << boolalpha << isSymmetric(root) << "\n";
     return 0;
 }

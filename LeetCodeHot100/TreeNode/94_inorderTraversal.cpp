@@ -1,7 +1,11 @@
+/*
+94. 二叉树的中序遍历
+
+给定一个二叉树的根节点root，返回它的中序遍历。
+*/
 #include <iostream>
 #include <queue>
 #include <vector>
-
 using namespace std;
 
 struct TreeNode {
@@ -42,26 +46,25 @@ TreeNode* buildTreeNode(const vector<string>& nodes) {
 	return root;
 }
 
-vector<int> dfs(TreeNode* root, vector<int>& result) {
-	if (!root) {
-		return result;
-	}
-	dfs(root->left, result);
-	result.push_back(root->val);
-	dfs(root->right, result);
-	return result;
+void dfs(TreeNode* root, vector<int>& res){
+	if(!root) return;
+	// “左-根-右”顺序
+	dfs(root->left, res);
+	res.push_back(root->val);
+	dfs(root->right, res);
+}
+
+vector<int> inorderTraversal(TreeNode* root){
+	vector<int> res;
+	dfs(root, res);
+	return res;
 }
 
 int main() {
     vector<string> nodes = {"1", "null", "2", "3"};
     TreeNode* root = buildTreeNode(nodes);
-    vector<int> result;
-    result = dfs(root, result);
-
-    for (int val : result) {
-        cout << val << " ";
-    }
+    vector<int> result = inorderTraversal(root);
+    for (int val : result) cout << val << " ";
     cout << "\n";
-
     return 0;
 }

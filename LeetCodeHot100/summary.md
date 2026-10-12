@@ -154,6 +154,22 @@ struct ListNode{
 };
 ```
 
+### 由数组快速构造链表
+
+常见于acm模式写法：
+
+```cpp
+ListNode* buildList(const vector<int>& nums){
+    ListNode dummy(0);
+    ListNode* head = &dummy;
+    for(int num : nums){
+        head->next = new ListNode(num);
+        head = head->next;
+    }
+    return dummy.next;
+}
+```
+
 ### 常见套路
 
 #### 1.哨兵节点
@@ -194,22 +210,6 @@ pre = cur;
 cur = nxt;
 ```
 
-#### 4.由数组快速构造链表
-
-常见于acm模式写法：
-
-```cpp
-ListNode* buildList(const vector<int>& nums){
-    ListNode dummy(0);
-    ListNode* head = &dummy;
-    for(int num : nums){
-        head->next = new ListNode(num);
-        head = head->next;
-    }
-    return dummy.next;
-}
-```
-
 ### 原题整理
 
 |题目|描述|思路|注意事项|链接|
@@ -229,6 +229,127 @@ ListNode* buildList(const vector<int>& nums){
 |LRU缓存|实现LRUCache类|**哈希表+双向链表**实现$O(1)$时间将key映射到链表的内存地址和维护“最近最少使用”；**单哨兵**，因此`dummy->next`是最近刚刚使用过的节点，`dummy->prev`是最久没被触碰过的节点，不存在`nullptr`；`remove()`实现架空x节点；`push_front()`实现置顶插入；哈希表的结构为`<int,Node*>`，即key为查找值，value为对应链表节点，再根据链表节点查找值，`get_node()`实现检查key，不存在返回空指针，存在返回对应node且将其移至最前；`get()`调用一次`get_node()`，根据node是否为空指针返回-1和值；`put()`调用一次`get_node()`，key存在则更新value，否则将新node放在最前，此时判断哈希表容量是否大于capacity，若为真删除dummy->prev和哈希表key对应元素|LRUCache(int capacity)初始化赋值函数，且需要赋值dummy的两侧；使用`auto it=key_to_node.find(key)`不会因为不存在而向哈希表中加入新值；使用`erase()`删除哈希表对应元素|[LRU缓存](./ListNode/146_LRU.cpp)|
 
 ## 二叉树
+
+二叉树是每个节点至多有两个子节点的树形结构，节点通过指针串联，**逻辑上是层次关系，物理上是离散存储**。它最本质的特点是**递归定义**——一棵二叉树 = 根节点 + 左子树 + 右子树，所以绝大多数题的解法都是递归，区别只在于**信息往哪个方向流动**。按结构性质可细分为**平衡二叉树**（任意节点左右子树高度差不超过 1）、**二叉搜索树**（左子树全部小于根、右子树全部大于根）和**红黑树**（一种自平衡的二叉搜索树），其中二叉搜索树的「中序遍历严格递增」是最高频的考点。
+
+四种遍历方式是所有题的基础：**先序**（根左右）、**中序**（左根右）、**后序**（左右根）、**层序**（BFS）。选哪种，取决于信息流动的方向：**先序自顶向下传参**（路径和、深度、上下界），**后序自底向上回收子树信息**（高度、直径、路径和），**中序在二叉搜索树上得到严格升序序列**；层序则配合 `queue` 和 `q.size()` 快照来逐层处理。
+
+### 结构定义
+
+```cpp
+struct TreeNode{
+    int val;
+    TreeNode* left;
+    TreeNode* right;
+
+    TreeNode() : val(0), left(nullptr), right(nullptr) {}
+    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+};
+```
+
+### 技巧
+
+#### 由字符串数组快速构建二叉树
+
+给定一个包含`"null"`和数字的字符串数组，按照前序遍历顺序构建二叉树。
+
+```cpp
+TreeNode* buildTreeNode(const vector<string>& nodes){
+    if(nodes.empty() || nodes[0] == "null") return nullptr;
+    TreeNode* root = new TreeNode(stoi(nodes[0]));
+    queue<TreeNode*> nodeQueue;
+    nodeQueue.push(root);
+    int index = 1;
+    // 由于队列先进先出的特性下一层循环会先处理同一层的left再处理right
+    while(!nodeQueue.empty() && index < nodes.size()){
+        TreeNode* cur = nodeQueue.front();
+        nodeQueue.pop();
+        if(index < nodes.size() && nodes[index] != "null"){
+            cur->left = new TreeNode(stoi(nodes[index]));
+            nodeQueue.push(cur->left);
+        }
+        index++;
+        if(index < nodes.size() && nodes[index] != "null"){
+            cur->right = new TreeNode(stoi(nodes[index]));
+            nodeQueue.push(cur->right);
+        }
+        index++;
+    }
+    return root;
+}
+```
+
+#### 前序遍历打印二叉树
+
+```cpp
+void printTreeNode(TreeNode* root){
+    if(!root) return;
+    cout << root->val << " ";
+    printTreeNode(root->left);
+    printTreeNode(root->right);
+    cout << "\n";
+}
+```
+
+#### 中序遍历
+
+```cpp
+void printTreeNode(TreeNode* root){
+    if(!root) return;
+    printTreeNode(root->left);
+    cout << root->val << " ";
+    printTreeNode(root->right);
+    cout << "\n";
+}
+```
+
+#### 层序遍历打印二叉树
+
+```cpp
+void printlevelOrder(TreeNode* root){
+    if(!root){
+        cout << "null" << endl;
+        return;
+    }
+    queue<TreeNode*> q;
+    vector<string> result;
+    q.push(root);
+    while(!q.empty()){
+        TreeNode* node = q.front();
+        q.pop();
+        if(node == nullptr){
+            result.push_back("null");
+            continue;
+        }
+        result.push_back(to_string(node->val));
+        q.push(node->left);
+        q.push(node->right);
+    }
+    while(!result.empty() && result.back() == "null") result.pop_back();
+    for(int i = 0; i < result.size(); i++) cout << result[i] << " ";
+    cout << "\n";
+}
+```
+
+### 原题整理
+
+|题目|描述|思路|注意事项|链接|
+|---|---|---|---|---|
+|二叉树的中序遍历|返回“左-根-右”的遍历顺序|**递归**，先访问左子树，再处理当前root，然后访问右子树|核心dfs四行，边界条件为root为空直接返回|[二叉树的中序遍历](./TreeNode/94_inorderTraversal.cpp)|
+|二叉树的最大深度|返回最大深度|**递归**，递归左子树和右子树的最大深度，然后求最大值+1即为当前层的最大深度|边界条件是root为空时返回0|[二叉树的最大深度](./TreeNode/104_maxDepth.cpp)|
+|翻转二叉树|返回翻转后的root|**递归**，每层`swap()`左和右节点，然后递归左子树和右子树|边界条件为root为空时返回`nullptr`|[翻转二叉树](./TreeNode/226_invertTree.cpp)|
+|对称二叉树|判断二叉树是否对称|**递归**，分别比较当前层、左子树的左边和右子树的右边、左子树的右边和右子树的左边|边界条件为p或q为空节点时，判断是否相等|[对称二叉树](./TreeNode/101_isSymmetric.cpp)|
+|二叉树的直径|返回树中从一个节点到另一个节点的最大距离，以边数表示|**递归**，参考[二叉树的最大深度](./TreeNode/104_maxDepth.cpp)，对于任意节点，它左边最长的一条单链就是左子树的最大深度，右侧同理，穿过该节点的最大距离即为两者相加，递归中维护该值每次保留最大值即可|由于题目描述为边数，因此只要对`int l = getDepth(root->left, max_diameter);`和`int r = getDepth(root->right, max_diameter);`相加即可|[二叉树的直径](./TreeNode/543_diameterofBinaryTree.cpp)|
+|二叉树的层序遍历|逐层从左往右访问所有节点|**逐层分组，组内遍历节点**，初始化一个二叉树数组`cur={root}`，表示当前需要遍历的节点数组，当cur有有效元素时，初始化一个vals数组保存元素值，一个next数组保存下一步需要遍历的节点|`move()`直接实现移动语义|[二叉树的层序遍历](./TreeNode/102_levelorder.cpp)|
+|将有序数组转换为二叉搜索树|升序数组转换为平衡二叉搜索树|**分治**，每次都根据当前区间的中点划分，天然可以满足平衡的要求；dfs参数为nums、left和right，左闭右开区间，每次取中点`m=(left+right)/2`将当前区间划分为`[left,m)`、根`nums[m]`、`[m,right)`，使用三参数初始化构造，左指针即为`dfs(nums,left,m)`，右指针即为`dfs(nums,m+1,right)`|递归终止条件为`left==right`返回空指针|[将有序数组转换为二叉搜索树](./TreeNode/108_sortedArrayToBST.cpp)|
+|验证二叉搜索树|判断给定树是否为二叉搜索树|`last`保存上一个需要比较的值；先遍历左子树，返回false就return false，继续判断当前节点值是否小于`last`，小于就return false，然后更新last，最后返回右子树的返回值|边界条件为`root==nullptr`返回`true`|[验证二叉搜索树](./TreeNode/98_isValidBST.cpp)|
+|二叉搜索树中第K小的元素|返回一个二叉搜索树的第k小的元素|**递归**，由于二叉搜索树的特性，需要先找到树中的最小元素，即需要递归到最左子树，然后执行`k--`直到`k==0`，最后遍历右子树|边界条件为`node==nullptr`，直接return|[二叉搜索树中第K小的元素](./TreeNode/230_KthSmallest.cpp)|
+|二叉树的右视图|从顶到底返回右侧看到的二叉树的节点|**维护一个depth**表示遍历的层深度，只有第一次到达这个深度时才会更新ans；先遍历右子树保证右子树先被看到|“根-右-左”的遍历顺序|[二叉树的右视图](./TreeNode/199_rightSideView.cpp)|
+|二叉树展开为链表|先序遍历顺序展开为链表|**逆先序递归**，先处理最右子树节点，初始化head节点，采用“右-左-根”的顺序，每次把更新的节点接在原head后，将root左指针置为nullptr，root右指针指向原有head，然后更新head为当前root，最后由底向上递归|初始化全局变量`head=nullptr`|[二叉树展开为链表](./TreeNode/114_faltten.cpp)|
+|从前序遍历与中序遍历序列构造二叉树|构造二叉树返回根节点|前序遍历的第一个节点一定是根节点，在中序遍历中找到对应元素，左边即为左子树元素，右边即为右子树元素，得到左子树的大小size，再根据size去中序遍历数组中切分；`pre_l`为当前子树在先序遍历中的起点，`pre_r`为当前子树在先序遍历中的终点（开区间，不含）`in_l`为当前子树在中序遍历中的起点|由于题目明确说明不包含重复元素，所以可以用哈希表快速查找中序遍历中根的索引|[从前序遍历与中序遍历序列构造二叉树](./TreeNode/105_buildTree.cpp)|
+|路径总和Ⅲ|返回该二叉树节点值之和等于target的路径的数目|**前缀和+哈希表+回溯**，遍历树的节点，任意两个节点u、v之间的路径可以表示为根节点到u的路径和减去根节点到v的路径和，用哈希表保存已经遍历过的前缀和，每次判断`cnt`包含`s-target`，将当前路径和放入哈希表，递归左右子树，最后回溯清理当前路径和|哈希表中需要先放入{0,1}，对应根节点到当前节点的路径和恰好为`target`的情况|[路径总和Ⅲ](./TreeNode/437_pathSum.cpp)|
+|二叉树的最近公共祖先|返回p和q的祖先x且x的深度尽可能大|**递归**，函数的定义是，以root为根的子树中，寻找p和q，递归左右子树，当left和right同时非空时返回root|边界条件为root为空指针或者root为p或q中的一个|[二叉树的最近公共祖先](./TreeNode/236_lowestCommonAncester.cpp)|
+|二叉树中的最大路径和|返回最大路径和|遍历左右子树，更新ans为`l_val+r_val+node->val`|由于树节点值可能为负，核心剪枝是在返回时与0取最大值|[二叉树中的最大路径和](./TreeNode/124_maxPathSum.cpp)|
 
 ## 图论
 

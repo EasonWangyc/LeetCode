@@ -1,6 +1,10 @@
+/*
+230. 二叉搜索树中第 K 小的元素
+
+给定一个二叉搜索树的根节点 root ，和一个整数 k ，请你设计一个算法查找其中第 k 小的元素（k 从 1 开始计数）。
+*/
 #include <vector>
 #include <queue>
-#include <string>
 #include <iostream>
 using namespace std;
 
@@ -42,34 +46,24 @@ TreeNode* buildTreeNode(const vector<string>& nodes) {
     return root;
 }
 
-vector<vector<int>> levelOrder(TreeNode* root) {
-    if(!root) return {};
-    vector<vector<int>> ans;
-    vector<TreeNode*> cur = {root};
-    while(cur.size()){
-        vector<TreeNode*> next;
-        vector<int> vals;
-        for(TreeNode* node : cur){
-            vals.push_back(node->val);
-            if(node->left) next.push_back(node->left);
-            if(node->right) next.push_back(node->right);
-        }
-        cur = move(next);
-        ans.push_back(move(vals));
+void dfs(TreeNode* node, int& k, int& ans){
+    // 从最左下角开始找，每次找到后k-1
+    if(node == nullptr || k <= 0) return;
+    dfs(node->left, k, ans);
+    k--;
+    if(k == 0){
+        ans = node->val;
+        return;
     }
-    return ans;
+    dfs(node->right, k, ans);
 }
 
 int main(){
-    vector<string> nodes = {"3", "9", "20", "null", "null", "15", "7"};
+    vector<string> nodes = {"5", "3", "6", "2", "4", "null", "null", "1"};
     TreeNode* root = buildTreeNode(nodes);
-    vector<vector<int>> result = levelOrder(root);
-
-    for (const auto& level : result) {
-        for (int val : level) {
-            cout << val << " ";
-        }
-        cout << "\n";
-    }
+    int k = 3;
+    int ans = 0;
+    dfs(root, k, ans);
+    cout << ans << endl;
     return 0;
 }

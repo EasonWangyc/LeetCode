@@ -1,12 +1,9 @@
 /*
-给定一棵二叉树，你需要计算它的直径长度。二叉树的直径长度是树中任意两个节点路径长度中的最大值。这条路径可能穿过也可能不穿过根节点。
+543. 二叉树的直径
 
-示例：
-输入：root = [1,2,3,4,5]
-输出：3
-解释：3 ，取路径 [4,2,1,3] 或 [5,2,1,3] 的长度。
-
-思路：递归法。观察边的数量，若节点为空，返回-1；否则定义l为左侧子树当前节点的直径，r为右侧子树，每次递归左右子树的值+1，更新ans为max(ans, l + r)；更新全局变量diameter为当前直径和之前直径的较大值，然后返回当前节点的高度，即max(l, r) 。
+给定一棵二叉树，你需要计算它的直径长度。二叉树的直径长度是树中任意两个节点路径长度中的最大值。
+这条路径可能穿过也可能不穿过根节点root。
+两节点之间路径的 长度 由它们之间边数表示。
 */
 #include <iostream>
 #include <queue>
@@ -52,24 +49,25 @@ TreeNode* buildTreeNode(const vector<string>& nodes) {
 	return root;
 }
 
-int dfs(TreeNode* root, int& ans){
-    if(root == nullptr) return -1;// 以边的数量为单位，所以空节点返回-1
-    int l = dfs(root->left, ans) + 1;   // 以边的数量为单位，所以要加1
-    int r = dfs(root->right, ans) + 1;  // 以边的数量为单位，所以要加1
-    ans = max(ans, l + r);
-    return max(l, r);// 返回以当前节点为根的子树的最大深度（以边的数量为单位）
+int getDepth(TreeNode* root, int& max_diameter){
+	if(!root) return 0;
+	int l = getDepth(root->left, max_diameter);
+	int r = getDepth(root->right, max_diameter);
+	// 对于一个节点，边数=最大深度-1，即减去当前节点，恰好能写成左右子树最大深度相加
+	// 当前节点的左子树的最大深度和右子树的最大深度相加，不包含当前节点
+	max_diameter = max(max_diameter, l + r);
+	return max(l, r) + 1;
 }
 
-int diameterOfBinaryTree(TreeNode* root) {
-    int ans = 0;
-    dfs(root, ans);
-    return ans;
+int diameterOfBinaryTree(TreeNode* root){
+	int max_diameter = 0;
+	getDepth(root, max_diameter);
+	return max_diameter;
 }
 
 int main() {
     vector<string> nodes = {"1", "2", "3", "4", "5"};
     TreeNode* root = buildTreeNode(nodes);
-    int result = diameterOfBinaryTree(root);
-    cout << result << endl;
+	cout << diameterOfBinaryTree(root) << "\n";
     return 0;
 }

@@ -1,8 +1,11 @@
+/*
+199. 二叉树的右视图
+
+给定一个二叉树的 根节点 root，想象自己站在它的右侧，按照从顶部到底部的顺序，返回从右侧所能看到的节点值。
+*/
 #include <vector>
 #include <queue>
-#include <string>
 #include <iostream>
-#include <climits>
 using namespace std;
 
 struct TreeNode {
@@ -45,9 +48,7 @@ TreeNode* buildTreeNode(const vector<string>& nodes) {
 void dfs(TreeNode* node, int depth, vector<int>& ans){
     if(node == nullptr) return;
     if(depth == ans.size()) ans.push_back(node->val);
-    // 只有第一次访问这个深度时才会添加节点值
     dfs(node->right, depth + 1, ans);
-    // 先访问右子树，这样在同一深度时右子树的节点会覆盖左子树的节点
     dfs(node->left, depth + 1, ans);
 }
 
@@ -56,9 +57,7 @@ int main(){
     TreeNode* root = buildTreeNode(nodes);
     vector<int> ans;
     dfs(root, 0, ans);
-    for(int num : ans){
-        cout << num << " ";
-    }
+    for(int num : ans) cout << num << " ";
     cout << "\n";
     return 0;
 }

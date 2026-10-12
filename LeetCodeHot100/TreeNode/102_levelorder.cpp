@@ -1,8 +1,12 @@
+/*
+102. 二叉树的层序遍历
+
+给你二叉树的根节点 root ，返回其节点值的 层序遍历 。 （即逐层地，从左到右访问所有节点）。
+*/
 #include <vector>
 #include <queue>
 #include <string>
 #include <iostream>
-#include <climits>
 using namespace std;
 
 struct TreeNode {
@@ -43,18 +47,34 @@ TreeNode* buildTreeNode(const vector<string>& nodes) {
     return root;
 }
 
-
-bool isValidBST(TreeNode* root, long long min = LLONG_MIN){
-    if(root == nullptr) return true;
-    if(!isValidBST(root->left, min)) return false;// 先判断左子树是否合法，如果不合法直接返回 false
-    if(root->val <= min) return false;// 如果当前节点的值不大于前一个节点的值，说明不是二叉搜索树，返回 false
-    min = root->val;
-    return isValidBST(root->right, min);// 最后判断右子树是否合法，如果不合法直接返回 false，否则返回 true
+vector<vector<int>> levelOrder(TreeNode* root) {
+    if(!root) return {};
+    vector<vector<int>> ans;
+    vector<TreeNode*> cur = {root};
+    while(cur.size()){
+        vector<TreeNode*> next;
+        vector<int> vals;
+        for(TreeNode* node : cur){
+            vals.push_back(node->val);
+            if(node->left) next.push_back(node->left);
+            if(node->right) next.push_back(node->right);
+        }
+        cur = move(next);
+        ans.push_back(move(vals));
+    }
+    return ans;
 }
 
-int main() {
-    vector<string> nodes = {"5", "1", "4", "null", "null", "3", "6"};
+int main(){
+    vector<string> nodes = {"3", "9", "20", "null", "null", "15", "7"};
     TreeNode* root = buildTreeNode(nodes);
-    cout << boolalpha << isValidBST(root) << endl;
+    vector<vector<int>> result = levelOrder(root);
+
+    for (const auto& level : result) {
+        for (int val : level) {
+            cout << val << " ";
+        }
+        cout << "\n";
+    }
     return 0;
 }

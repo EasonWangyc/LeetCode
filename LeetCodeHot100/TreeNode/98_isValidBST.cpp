@@ -1,3 +1,13 @@
+/*
+98. 验证二叉搜索树
+
+给你一个二叉树的根节点 root ，判断其是否是一个有效的二叉搜索树。
+
+有效 二叉搜索树定义如下：
+节点的左子树只包含 严格小于 当前节点的数。
+节点的右子树只包含 严格大于 当前节点的数。
+所有左子树和右子树自身必须也是二叉搜索树。
+*/
 #include <vector>
 #include <queue>
 #include <string>
@@ -43,23 +53,18 @@ TreeNode* buildTreeNode(const vector<string>& nodes) {
     return root;
 }
 
-void dfs(TreeNode* node, int& k, int& ans){
-    if(node == nullptr || k <= 0) return;
-    dfs(node->left, k, ans);
-    k--;
-    if(k == 0){
-        ans = node->val;
-        return;
-    }
-    dfs(node->right, k, ans);
+
+bool isValidBST(TreeNode* root, long long last = LLONG_MIN){
+    if(root == nullptr) return true;
+    if(!isValidBST(root->left, last)) return false;
+    if(root->val <= last) return false;
+    last = root->val;
+    return isValidBST(root->right, last);
 }
 
-int main(){
-    vector<string> nodes = {"5", "3", "6", "2", "4", "null", "null", "1"};
+int main() {
+    vector<string> nodes = {"5", "1", "4", "null", "null", "3", "6"};
     TreeNode* root = buildTreeNode(nodes);
-    int k = 3;
-    int ans = 0;
-    dfs(root, k, ans);
-    cout << ans << endl;
+    cout << boolalpha << isValidBST(root) << endl;
     return 0;
 }

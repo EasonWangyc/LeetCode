@@ -1,3 +1,7 @@
+/*
+
+给你一棵二叉树的根节点 root ，翻转这棵二叉树，并返回其根节点。
+*/
 #include <iostream>
 #include <queue>
 #include <vector>
@@ -42,20 +46,26 @@ TreeNode* buildTreeNode(const vector<string>& nodes) {
 	return root;
 }
 
-bool isSameTree(TreeNode* p, TreeNode* q) {
-    if(p == nullptr || q == nullptr) {
-        return p == q;
-    }
-    return p->val == q->val && isSameTree(p->left, q->right) && isSameTree(p->right, q->left);
+void printTree(TreeNode* root){
+    if(!root) return;
+    cout << root->val << " ";
+    printTree(root->left);
+    printTree(root->right);
 }
 
-bool isSymmetric(TreeNode* root) {
-    return isSameTree(root->left, root->right);    
+TreeNode* invertTree(TreeNode* root){
+	if(!root) return nullptr;
+	swap(root->left, root->right);
+	invertTree(root->left);
+	invertTree(root->right);
+	return root;
 }
 
-int main() {
-    vector<string> nodes = {"1", "2", "2", "3", "4", "4", "3"};
+int main(){
+    vector<string> nodes = {"4", "2", "7", "1", "3", "6", "9"};
     TreeNode* root = buildTreeNode(nodes);
-    cout << boolalpha << isSymmetric(root) << "\n";
+    root = invertTree(root);
+    printTree(root);
+    cout << "\n";
     return 0;
 }

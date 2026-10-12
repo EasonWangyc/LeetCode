@@ -1,10 +1,17 @@
+/*
+104. 二叉树的最大深度
+
+给定一个二叉树 root ，返回其最大深度。
+
+二叉树的 最大深度 是指从根节点到最远叶子节点的最长路径上的节点数。
+*/
 #include <iostream>
 #include <queue>
 #include <vector>
 #include <algorithm>
 using namespace std;
 
-struct TreeNode {
+struct TreeNode{
     int val;
     TreeNode* left;
     TreeNode* right;
@@ -42,26 +49,16 @@ TreeNode* buildTreeNode(const vector<string>& nodes) {
 	return root;
 }
 
-void printTree(TreeNode* root){
-    if(!root) return;
-    cout << root->val << " ";
-    printTree(root->left);
-    printTree(root->right);
-}
-
-TreeNode* invertTree(TreeNode* root){
-    if(!root) return nullptr;
-    swap(root->left, root->right);
-    invertTree(root->left);
-    invertTree(root->right);
-    return root;
+int maxDepth(TreeNode* root){
+	if(!root) return 0;
+	int l = maxDepth(root->left);
+	int r = maxDepth(root->right);
+	return max(l, r) + 1;
 }
 
 int main(){
-    vector<string> nodes = {"4", "2", "7", "1", "3", "6", "9"};
+    vector<string> nodes = {"3", "9", "20", "null", "null", "15", "7"};
     TreeNode* root = buildTreeNode(nodes);
-    root = invertTree(root);
-    printTree(root);
-    cout << endl;
+    cout << maxDepth(root) << "\n";
     return 0;
 }

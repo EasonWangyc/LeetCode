@@ -1,3 +1,8 @@
+/*
+108. 将有序数组转换为二叉搜索树
+
+给你一个整数数组 nums ，其中元素已经按升序排列，请你将其转换为一棵 平衡 二叉搜索树。
+*/
 #include <vector>
 #include <queue>
 #include <string>
@@ -15,8 +20,8 @@ struct TreeNode {
 
 TreeNode* dfs(vector<int>& nums, int left, int right) {
     if(left == right) return nullptr;
-    int m = left + (right - left) / 2;
-    return new TreeNode(nums[m], dfs(nums, left, m), dfs(nums, m + 1, right));   
+    int m = (left + right) / 2;
+    return new TreeNode(nums[m], dfs(nums, left, m), dfs(nums, m + 1, right));
 }
 
 TreeNode* sortedArrayToBST(vector<int>& nums){
@@ -28,34 +33,23 @@ void printlevelOrder(TreeNode* root){
         cout << "null" << endl;
         return;
     }
-
     queue<TreeNode*> q;
     vector<string> result;
     q.push(root);
-
     while(!q.empty()){
         TreeNode* node = q.front();
         q.pop();
-
         if(node == nullptr){
             result.push_back("null");
             continue;
         }
-
         result.push_back(to_string(node->val));
         q.push(node->left);
         q.push(node->right);
     }
-
-    while(!result.empty() && result.back() == "null"){
-        result.pop_back();
-    }
-
-    for(int i = 0; i < static_cast<int>(result.size()); ++i){
-        if(i > 0) cout << " ";
-        cout << result[i];
-    }
-    cout << endl;
+    while(!result.empty() && result.back() == "null") result.pop_back();
+    for(int i = 0; i < result.size(); i++) cout << result[i] << " ";
+    cout << "\n";
 }
 
 int main() {
