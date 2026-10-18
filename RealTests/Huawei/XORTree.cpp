@@ -82,10 +82,10 @@ int main() {
         adj[u].push_back(v);
         adj[v].push_back(u);
     }
-    vector<int> init(n);
-    vector<int> goal(n);
-    for(int i = 0; i < n; i++) cin >> init[i];
-    for(int i = 0; i < n; i++) cin >> goal[i];
+    vector<int> init(n + 1);
+    vector<int> goal(n + 1);
+    for(int i = 1; i <= n; i++) cin >> init[i];
+    for(int i = 1; i <= n; i++) cin >> goal[i];
     int ans = solution(adj, init, goal, n);
     cout << ans << "\n";
     return 0;

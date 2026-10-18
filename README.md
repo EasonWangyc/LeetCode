@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🗂️ 一个笨蛋的刷题记录
+# 🗂️ 刷题记录
 
 **C++/CUDA/Python · 分类归纳**
 
