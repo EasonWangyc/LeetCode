@@ -33,8 +33,12 @@ POPO希望找到一个方案能用最少的升级次数用上最新版:
 
 注意：用例保证最终规则中一定包含精确的目标版本号，同时需要严格满足当前版本等于目标版本才算更新成功，大于不成立。
 
-方法一：排序+贪心+剪枝
-时间复杂度：排序O(NlogN)，搜索O(N)，总时间复杂度O(NlogN)
+设规则数量为N，涉及到的不同版本号节点个数为V，V≤N+2，比较两个方法的时间复杂度。
+
+方法一：排序+贪心+剪枝，排序O(NlogN)，搜索O(N)，总时间复杂度O(NlogN)
+
+方法二：bfs+队列，时间复杂度O(N*V)=O(N^2)
+
 */
 #include <iostream>
 #include <vector>
@@ -132,3 +136,67 @@ int main(){
     for(const string& s : path) cout << s << "\n";
     return 0;
 }
+
+/*
+BFS最短路径
+...
+#include <map>
+...
+
+int main(){
+    ...
+    int n;
+    cin >> n;
+    vector<Upgrade> candidates(n);
+    for (int i = 0; i < n; i++) {
+        string to_str, min_str;
+        cin >> to_str >> min_str;
+        candidates[i] = {parseVersion(to_str), parseVersion(min_str)};
+    }
+    if (start == target) {
+        cout << 0 << "\n";
+        return 0;
+    }
+    queue<Version> q;
+    map<Version, Version> parent;
+    map<Version, bool> visited;
+    q.push(start);
+    visited[start] = true;
+    bool found = false;
+    while(!q.empty()){
+        Version cur = q.front();
+        q.pop();
+        if(cur == target){
+            found = true;
+            break;
+        }
+        for(const auto& cand : candidates){
+            if(cur >= cand.min_compact){
+                if(!visited[cand.to_ver]){
+                    visited[cand.to_ver] = true;
+                    parent[cand.to_ver] = cur;
+                    q.push[cand.to_ver];
+                    if(cand.to_ver == target){
+                        found = true;
+                        break;
+                    }
+                }
+            }
+        }
+        if(found) break;
+    }
+    if(!found){
+        cout << -1 << "\n";
+        return 0;
+    }
+    // 回溯重建
+    vector<string> path;
+    Version curr = target;
+    while(!(curr != start)){
+        path.push_back(curr.str);
+        curr = parent[curr];
+    }
+    reverse(path.begin(), path.end());
+    ...
+}
+*/
