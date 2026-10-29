@@ -666,7 +666,7 @@ for (int i = 0; i < n; i++) {
 ```cpp
 // 大顶堆：元素值大的元素在堆顶，遇到pair先比较第一个在比较第二个
 priority_queue<int> pq1;
-priority_queue<pari<int, int>> pq2;
+priority_queue<pair<int, int>> pq2;
 // 小顶堆：元素值小的元素在堆顶，遇到pair先比较第一个在比较第二个
 priority_queue<int, greater<int>> pq3;
 priority_queue<pair<int, int>, greater<int>> pq4;

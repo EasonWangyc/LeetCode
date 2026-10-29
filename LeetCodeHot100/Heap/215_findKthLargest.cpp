@@ -13,6 +13,13 @@ using namespace std;
 
 /* 优先队列做法，时间复杂度O(nlogk)
 int findKthLargest(vector<int>& nums, int k){
+    // 模板参数定义，要指定greater必须显式指出第二个变量
+    template<
+        class T,
+        class Container = std::vector<T>,
+        class Compare = std::less<typename Container::value_type>
+    > class priority_queue;
+    
     priority_queue<int, vector<int>, greater<int>> minHeap;
     for(int x : nums){
         minHeap.push(x);
