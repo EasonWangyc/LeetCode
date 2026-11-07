@@ -1,0 +1,27 @@
+/*
+26. 删除有序数组中的重复项
+
+给你一个 非严格递增排列 的数组 nums ，请你 原地 删除重复出现的元素，使每个元素 只出现一次 ，返回删除后数组的新长度。元素的 相对顺序 应该保持 一致 。然后返回 nums 中唯一元素的个数。
+
+考虑 nums 的唯一元素的数量为 k。去重后，返回唯一元素的数量 k。
+
+nums 的前 k 个元素应包含 排序后 的唯一数字。下标 k - 1 之后的剩余元素可以忽略。
+*/
+#include <bits/stdc++.h>
+using namespace std;
+
+int removeDuplicates(vector<int>& nums) {
+    int ref = 1;
+    int n = nums.size();
+    for(int i = 1; i < n; i++) {
+        if(nums[i] == nums[i - 1]) continue;
+        else nums[ref++] = nums[i];
+    }
+    return ref;
+}
+
+int main() {
+    vector<int> nums = {1, 1, 2};
+    cout << removeDuplicates(nums) << "\n";
+    return 0;
+}
